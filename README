@@ -1,0 +1,7 @@
+This is the R-package: maximin.
+
+It has been tested on Linux and OSX.
+
+This README is a stub.  Please see the R-package documentation for more
+information. It should be possible to install this source package via 
+"R CMD INSTALL maximin", where "maximin" is this directory, from "../".
