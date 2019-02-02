@@ -1,11 +1,32 @@
-## Questions? Contact Furong Sun (furongs@vt.edu) and Robert B. Gramacy (rbg@vt.edu)
+#*******************************************************************************
+#
+# Space-filling Design under the Maximin Distance
+# Copyright (C) 2018, Virginia Tech
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+# Questions? Contact Furong Sun (furongs@vt.edu) and Robert B. Gramacy (rbg@vt.edu)
+#
+#*******************************************************************************
 
 ## maximin.cand:
 ##
-## generates a space-filling design sequentially in a DISCRETE way under the criterion of maximin distance;
-## the candidate pool is pre-specified.
+## generates a space-filling design in a FINITE DESIGN region under the criterion of 
+## maximin distance; the candidate pool is pre-specified.
 
-maximin.cand <- function(n, Xcand, Tmax, Xorig=NULL, init=NULL, verb=FALSE) 
+maximin.cand <- function(n, Xcand, Tmax=nrow(Xcand), Xorig=NULL, init=NULL, verb=FALSE, tempfile=NULL) 
 {
   ## sanity check
   if(class(Xcand) != "matrix") Xcand <- as.matrix(Xcand)
@@ -55,9 +76,12 @@ maximin.cand <- function(n, Xcand, Tmax, Xorig=NULL, init=NULL, verb=FALSE)
       md.ind <- unique(c(md.ind, which(D2==md2, arr.ind=TRUE)[,1]))
     }
     
-    ## the distance matrix between Xun and X & Xorig: nrow(Xun) * (n + nrow(Xorig))
-    Du2 <- cbind(Du, distance(Xun, Xorig))
-    uw.ind <- which(rowSums(Du2 > md)==ncol(Du2))
+    ## the distance matrix between Xun and Xorig: nrow(Xun) * nrow(Xorig)
+    
+    # Du2 <- cbind(Du, distance(Xun, Xorig))
+    # uw.ind <- which(rowSums(Du2 > md)==ncol(Du2))
+    Du2.newcols <- distance(Xun, Xorig) ## to avoid another duplicate of Du: saving memory!!!
+    uw.ind <- which(rowSums(Du > md)==ncol(Du) & rowSums(Du2.newcols > md) == ncol(Du2.newcols))
   }
   
   ## allocate space for 'md' and 'mdlen'
@@ -66,7 +90,10 @@ maximin.cand <- function(n, Xcand, Tmax, Xorig=NULL, init=NULL, verb=FALSE)
   ## there should be improvement with each iteration: either (mdprime > md) or (mdprime == md && length(mdprime) < length(md))
   for(t in 1:Tmax){
     
-    if(length(uw.ind) == 0) stop("Please load the 'temp.RData' since the maximum progress has been achieved :-)")
+    if(length(uw.ind) == 0){
+       warning("terminated early since maximum progress has been achieved :-)\n")
+       return(list(inds=xi, mis=mind, mislen=mindlen))
+    }
     
     row.in.ind <- ceiling(runif(1)*length(md.ind))
     row.in <- md.ind[row.in.ind] 
@@ -94,8 +121,6 @@ maximin.cand <- function(n, Xcand, Tmax, Xorig=NULL, init=NULL, verb=FALSE)
     Du[,row.in] <- as.numeric(distance(Xr, Xun))
     Du[row.out,] <- as.numeric(distance(xold, X))
     
-    uwprime.ind <- which(rowSums(Du > mdprime)==ncol(Du))
-    
     ## distances to fixed design locations given it exists
     if(!is.null(Xorig)){
       
@@ -114,10 +139,11 @@ maximin.cand <- function(n, Xcand, Tmax, Xorig=NULL, init=NULL, verb=FALSE)
       }
       
       ## update Du2
-      Du2[,row.in] <- Du[,row.in]
-      Du2[row.out,] <- as.numeric(distance(xold, rbind(X, Xorig)))
+      Du2.newcols[row.out,] <- as.numeric(distance(xold, Xorig))
+      uwprime.ind <- which(rowSums(Du > mdprime)==ncol(Du) & rowSums(Du2.newcols > mdprime)==ncol(Du2.newcols))
       
-      uwprime.ind <- which(rowSums(Du2 > mdprime)==ncol(Du2))
+    }else{
+      uwprime.ind <- which(rowSums(Du > mdprime)==ncol(Du))
     }
     
     ## sanity check
@@ -136,11 +162,11 @@ maximin.cand <- function(n, Xcand, Tmax, Xorig=NULL, init=NULL, verb=FALSE)
     mind[t+1] <- md
     mindlen[t+1] <- mdlen
     
-    ## save the updated information since Tmax might not be reached when the best design has been found
-    save(X, xi, mind, mindlen, t, file="temp.RData")
+    if(!is.null(tempfile)) save(xi, mind, mindlen, t, file=tempfile) ## no need to save X since xi is enough
     
-    if(verb == TRUE)
-      if(t%%10 == 0) cat("t=", t, "/Tmax=", Tmax, " is done.\n", sep="")
+    if(verb==TRUE)
+       if(t%%10 == 0) cat("t=", t, "/Tmax=", Tmax, " is done.\n", sep="") # progress indicator
   }
-  return(list(X=X, inds=xi, mis=mind, mislen=mindlen))
+  
+  return(list(inds=xi, mis=mind, mislen=mindlen))
 }

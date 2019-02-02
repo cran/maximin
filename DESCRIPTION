@@ -1,16 +1,15 @@
 Package: maximin
-Title: Sequential Space-Filling Design under the Criterion of Maximin
-        Distance
-Version: 1.0-1
-Date: 2018-10-10
+Title: Space-Filling Design under Maximin Distance
+Version: 1.0-2
+Date: 2019-02-02
 Author: Furong Sun <furongs@vt.edu>, Robert B. Gramacy <rbg@vt.edu>
 Depends: R (>= 2.14)
 Imports: plgp
 Suggests: lhs
-Description: Builds up sequential space-filling design under the criterion of maximin distance. Both discrete and continuous versions are provided.
+Description: Constructs a space-filling design under the criterion of maximin distance. Both discrete and continuous versions are provided.
 Maintainer: Furong Sun <furongs@vt.edu>
 License: LGPL
 NeedsCompilation: no
-Packaged: 2018-10-11 16:20:54 UTC; furong
+Packaged: 2019-02-02 18:42:32 UTC; furong
 Repository: CRAN
-Date/Publication: 2018-10-19 12:20:05 UTC
+Date/Publication: 2019-02-02 19:00:03 UTC

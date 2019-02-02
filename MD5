@@ -1,7 +1,7 @@
-d41d8cd98f00b204e9800998ecf8427e *ChangeLog
-d310084a854d7c45778b54ef14232120 *DESCRIPTION
+ba3036ed71b9b8fc9e5f3a21578098ef *ChangeLog
+8691a31ebcf2abd6d0c53be4a9cb4d65 *DESCRIPTION
 d37e0726ad01101adff825b20c6ffb25 *NAMESPACE
-2fd0b201b83e28c94bd9dd7a0ef0eeb5 *R/maximin.R
-c430de71cf57a9a4873a0d2f1383a336 *R/maximin_cand.R
-e6bd4ae0c3087989c85b9796fd5e6162 *README
-d4ddf6f6f64d9ce788bb2c4030f88753 *man/maximin.Rd
+4b1525fd5013e5987c08ba2241abd147 *R/maximin.R
+0a9343dc585c163e81f94e097d39ad0a *R/maximin_cand.R
+af7c0edfcf5e67fbbbcca9eaf38a09d1 *README
+85ce7fb5268d2f879422ccea064b8c7a *man/maximin.Rd

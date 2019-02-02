@@ -1,0 +1,8 @@
+1.0-2 (02 Feb 2019)
+-----
+
+Changed the title of package
+
+Modified maximin.cand to save memory suggested by Bobby
+
+Revised the manual file

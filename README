@@ -1,6 +1,6 @@
 This is the R-package: maximin.
 
-It has been tested on Linux and OSX.
+It has been tested on Linux, OSX, and Windows.
 
 This README is a stub.  Please see the R-package documentation for more
 information. It should be possible to install this source package via 

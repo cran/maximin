@@ -1,10 +1,31 @@
-## Questions? Contact Furong Sun (furongs@vt.edu) and Robert B. Gramacy (rbg@vt.edu)
+#*******************************************************************************
+#
+# Space-filling Design under the Maximin Distance
+# Copyright (C) 2018, Virginia Tech
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+#
+# Questions? Contact Furong Sun (furongs@vt.edu) and Robert B. Gramacy (rbg@vt.edu)
+#
+#*******************************************************************************
 
 ## maximin:
 ##
-## generates a space-filling design sequentially in a CONTINUOUS way under the criterion of maximin distance
+## generates a space-filling design in a CONSTRAINED CONTINUOUS region under the criterion of maximin distance
 
-maximin <- function(n, p, T, Xorig=NULL, Xinit=NULL, verb=FALSE, plot=FALSE, boundary=FALSE)
+maximin <- function(n, p, T=10*n, Xorig=NULL, Xinit=NULL, verb=FALSE, plot=FALSE, boundary=FALSE)
 { 
   ## sanity check
   if(!is.null(Xorig) && ncol(Xorig) != p) stop("column mismatch between X and Xorig :-(")
@@ -322,7 +343,7 @@ maximin <- function(n, p, T, Xorig=NULL, Xinit=NULL, verb=FALSE, plot=FALSE, bou
     if((verb==TRUE) && (t%%10==0)) cat("t=", t, "/T=", T, " is done.\n", sep="")
   }
   
-  ## at the last iteration, recover the maximum minimum distance as well as the corresponding X
+  ## at the last iteration, recover the maximum md so far and the corresponding X
   mind[t+1] <- max(mind)
   X <- Xind[[which.max(mind)]]
   
