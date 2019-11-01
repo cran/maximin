@@ -1,7 +1,16 @@
+1.0-3 (31 Oct 2019)
+-----
+
+Cosmetic edits of the manual file
+
+Updated the reference
+
+Added the "lola_kn" dataset and its documentation
+
 1.0-2 (02 Feb 2019)
 -----
 
-Changed the title of package
+Updated the package title
 
 Modified maximin.cand to save memory suggested by Bobby
 

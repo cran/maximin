@@ -1,7 +1,10 @@
-ba3036ed71b9b8fc9e5f3a21578098ef *ChangeLog
-8691a31ebcf2abd6d0c53be4a9cb4d65 *DESCRIPTION
-d37e0726ad01101adff825b20c6ffb25 *NAMESPACE
-4b1525fd5013e5987c08ba2241abd147 *R/maximin.R
-0a9343dc585c163e81f94e097d39ad0a *R/maximin_cand.R
+6657566ce72e434da4f8fa8a20b92c05 *ChangeLog
+2b8e0b28c8c8742222de91e58389a06c *DESCRIPTION
+94339a31efdab4dfddc8a39088559db5 *NAMESPACE
+3c848bace2074298885a67a07b5d537d *R/data.R
+5c7145047db34d83307691bc72a891d6 *R/maximin.R
+b6a6c91b0406ca31bf2247e53476a078 *R/maximin_cand.R
 af7c0edfcf5e67fbbbcca9eaf38a09d1 *README
-85ce7fb5268d2f879422ccea064b8c7a *man/maximin.Rd
+3776e00492dcd501dd4d99d924c81d26 *data/lola_kn.RData
+fafe4c1f8faa1380c5375ec6d7be02e0 *man/lola_kn.Rd
+02c3f491d56e6d33a1229bb3ccf6fa11 *man/maximin.Rd

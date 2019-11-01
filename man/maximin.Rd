@@ -54,10 +54,10 @@
   \code{\link{optim}} is used to maximize the distance between the "to-be-swapped-in" location 
   and other design locations as well as to the existing design, \code{Xorig}. Several heuristics 
   are deployed for situations where the search becomes stuck in a local mode.  One involves moving 
-  to a location with non-minimum distance. Or, if there is no progress during the past \eqn{0.3\times\code{n}}{0.3*\code{n}} 
+  to a location with non-minimum distance. Or, if there is no progress during the past \eqn{0.3\times n}{0.3*n} 
   iterations, we jump to a location which has the maximum minimum distance. 
   
-  For a visualization of applying \code{maximin.cand} in a real-life problem on solar irradiance, see Sun et al. (2018).
+  For a visualization of applying \code{maximin.cand} in a real-life problem on solar irradiance, see Sun et al. (2019).
   
   \code{maximin.cand} returns the indices of \code{Xcand}, which makes the final space-filling design,
   the minimum pairwise Euclidean distance with each iteration and the corresponding number 
@@ -79,9 +79,9 @@
 
 \references{
   
-  F. Sun, R.B. Gramacy, B. Haaland, S.Y. Lu, and Y. Hwang (2018)
-  \emph{Synthesizing Simulation and Field Data of Solar Irradiance};
-  preprint on arXiv:1806.05131. \url{http://arxiv.org/abs/1806.05131}
+  F. Sun, R.B. Gramacy, B. Haaland, S.Y. Lu, and Y. Hwang (2019)
+  \emph{Synthesizing Simulation and Field Data of Solar Irradiance}, Statistical Analysis and Data Mining, 12(4), 311-324;
+  preprint on arXiv:1806.05131.
   
   M.H.Y. Tan (2013)
   \emph{Minimax Designs for Finite Design Regions}, Technometrics, 55(3), 346-358. 

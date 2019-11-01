@@ -1,9 +1,9 @@
 #*******************************************************************************
 #
-# Space-filling Design under the Maximin Distance
+# Space-filling Design under Maximin Distance
 # Copyright (C) 2018, Virginia Tech
 #
-# This library is free software; you can redistribute it and/or
+# This library is a free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
@@ -15,7 +15,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
 # Questions? Contact Furong Sun (furongs@vt.edu) and Robert B. Gramacy (rbg@vt.edu)
 #
@@ -53,9 +53,11 @@ maximin <- function(n, p, T=10*n, Xorig=NULL, Xinit=NULL, verb=FALSE, plot=FALSE
   ## the search space when optimizing
   sp <- function(xs, xd=NULL, md){
     if(!is.null(xd)){
-      ds <- as.numeric(distance(matrix(xs, nrow=1), matrix(xd, nrow=1)))
-    }else ds <- md
-    ## treat 'xs' as the center and 'sqrt(ds)' as the "radius" to justify a hypercube
+       ds <- as.numeric(distance(matrix(xs, nrow=1), matrix(xd, nrow=1)))
+    }else{
+       ds <- md
+    }
+    ## treat 'xs' as the center and 'sqrt(ds)' as the radius to justify a hypercube
     lo <- xs - sqrt(ds) ## lower bound
     up <- xs + sqrt(ds) ## upper bound
     ## guarantee the search space to be within the global input space
@@ -73,36 +75,42 @@ maximin <- function(n, p, T=10*n, Xorig=NULL, Xinit=NULL, verb=FALSE, plot=FALSE
   st <- function(xs, xd, ds){
     st.prime <- rep(NA, length(xs))
     for(i in 1:length(xs)){
-      st.prime[i] <- ifelse(xs[i] > xd[i], xs[i] - 0.05*sqrt(ds), xs[i] + 0.05*sqrt(ds))
-      if(xs[i] == xd[i]) st.prime[i] <- xs[i]
+        st.prime[i] <- ifelse(xs[i] > xd[i], xs[i] - 0.05*sqrt(ds), xs[i] + 0.05*sqrt(ds))
+        if(xs[i] == xd[i]) st.prime[i] <- xs[i]
     }
     return(st.prime)
   }
   
-  ## to check whether each element of a vector is the same
-  cvs <- function(x) diff(range(x)) < sqrt(.Machine$double.eps)
+  ## to check whether each (numeric) element of a vector is the same
+  cvs <- function(x){
+    diff(range(x)) < sqrt(.Machine$double.eps)
+  }
   
-  ## the initial design: an n*p matrix
+  ## the initial design: an n * p matrix
   if(!is.null(Xinit)){
-    X <- Xinit ## from a previous experiment
-  }else X <- matrix(runif(n*p), ncol=p) ## or randomly generated within the global input space
+     X <- Xinit ## from a previous experiment
+  }else{
+     X <- matrix(runif(n*p), ncol=p) ## or randomly generated within the global input space
+  }
   
   D <- distance(X)
   md <- min(as.numeric(D[upper.tri(D)]))
-  md.ind <- which(D==md, arr.ind=TRUE)[,1] ## the list of locations among X with md
+  md.ind <- which(D==md, arr.ind=TRUE)[,1] ## the list of locations among X with `md'
   
   if(!is.null(Xorig)){
     D2 <- distance(X, Xorig)  ## an nrow(X) * nrow(Xorig) matrix
     md2 <- min(D2)            ## the 'md' between X and Xorig
     if(md2 < md){
-      md <- md2
-      md.ind <- which(D2==md2, arr.ind=TRUE)[,1]
-    }else if(md2 == md) md.ind <- unique(c(md.ind, which(D2==md2, arr.ind=TRUE)[,1]))
+       md <- md2
+       md.ind <- which(D2==md2, arr.ind=TRUE)[,1]
+    }else if(md2 == md){
+       md.ind <- unique(c(md.ind, which(D2==md2, arr.ind=TRUE)[,1]))
+    }
   }
   
   ## allocate the 'md' and 'design' for each iteration
   mind <- rep(NA, T+1); mind[1] <- md
-  Xind <- vector(mode="list", T+1); Xind[[1]] <- X
+  Xind <- vector("list", T+1); Xind[[1]] <- X
   ## build up the design iteratively
   for(t in 1:T){
     
@@ -129,42 +137,46 @@ maximin <- function(n, p, T=10*n, Xorig=NULL, Xinit=NULL, verb=FALSE, plot=FALSE
     md.ind <- md.ind[!md.ind==row.out] ## update the 'md' list
     
     if(plot==TRUE){
-      d <- sample(1:p, 2, replace=FALSE) ## randomly choose 2 coordinates to plot
-      Xv <- X[,d]
-      plot(Xv, xlab=paste0("x", d[1]), ylab=paste0("x", d[2]), xlim=c(0,1), ylim=c(0,1), main=paste0("md.loc at it=", t))
-      points(Xorig[,d], pch=20, col="forestgreen")
-      points(xold[d[1]], xold[d[2]], pch=20, col="red")
-      rect(low[d[1]], low[d[2]], upp[d[1]], upp[d[2]], col=rgb(0,1,0,alpha=0.2)) ## the search space
-      if(!is.null(Xorig)){
-        legend("topright", c("xold", "Xorig"), xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col=c("red","forestgreen"), bty="n")
-      }else legend("topright", "xold", xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col="red", bty="n")
+       d <- sample(1:p, 2, replace=FALSE) ## randomly choose 2 coordinates to plot
+       Xv <- X[,d]
+       plot(Xv, xlab=paste0("x", d[1]), ylab=paste0("x", d[2]), xlim=c(0,1), ylim=c(0,1), main=paste0("md.loc at it=", t))
+       points(Xorig[,d], pch=20, col="forestgreen")
+       points(xold[d[1]], xold[d[2]], pch=20, col="red")
+       rect(low[d[1]], low[d[2]], upp[d[1]], upp[d[2]], col=rgb(0,1,0,alpha=0.2)) ## the search space
+       if(!is.null(Xorig)){
+          legend("topright", c("xold", "Xorig"), xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col=c("red","forestgreen"), bty="n")
+       }else{
+          legend("topright", "xold", xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col="red", bty="n")
+       }
     }
     
-    while(all.equal(as.numeric(start), as.numeric(out$par))==TRUE){
+    while(all.equal(as.numeric(start), as.numeric(out$par))==TRUE){ ## use `all.equal` instead of `identical` due to numeric precision
       if(length(md.ind) >= 1){ ## if there are more than one location with 'md' ...    ## 1
-        row.out.ind <- ceiling(runif(1)*length(md.ind))
-        row.out <- md.ind[row.out.ind]
-        xold <- X[row.out,]
-        
-        sw.in <- sp(xs=xold, md=md)
-        low <- sw.in$lo
-        upp <- sw.in$up
-        
-        start <- matrix(xold, nrow=1)
-        out <- optim(par=start, fn=maximin.obj, method="L-BFGS-B",
-                     lower=low, upper=upp, control=list(fnscale=-1),
-                     X=X, row.out=row.out, Xorig=Xorig)
-        md.ind <- md.ind[!md.ind==row.out] ## update the 'md' list
-        
-        if(plot==TRUE){
-          Xv <- X[,d]
-          plot(Xv, xlab=paste0("x", d[1]), ylab=paste0("x", d[2]), xlim=c(0,1), ylim=c(0,1), main=paste0("md.loc at it=", t))
-          points(Xorig[,d], pch=20, col="forestgreen")
-          points(xold[d[1]], xold[d[2]], pch=20, col="red")
-          rect(low[d[1]], low[d[2]], upp[d[1]], upp[d[2]], col=rgb(0,1,0,alpha=0.2)) # the search space
-          if(!is.null(Xorig)){
-            legend("topright", c("xold", "Xorig"), xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col=c("red","forestgreen"), bty="n")
-          }else legend("topright", "xold", xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col="red", bty="n")
+         row.out.ind <- ceiling(runif(1)*length(md.ind))
+         row.out <- md.ind[row.out.ind]
+         xold <- X[row.out,]
+         
+         sw.in <- sp(xs=xold, md=md)
+         low <- sw.in$lo
+         upp <- sw.in$up
+         
+         start <- matrix(xold, nrow=1)
+         out <- optim(par=start, fn=maximin.obj, method="L-BFGS-B",
+                      lower=low, upper=upp, control=list(fnscale=-1),
+                      X=X, row.out=row.out, Xorig=Xorig)
+         md.ind <- md.ind[!md.ind==row.out] ## update the 'md' list
+         
+         if(plot==TRUE){
+            Xv <- X[,d]
+            plot(Xv, xlab=paste0("x", d[1]), ylab=paste0("x", d[2]), xlim=c(0,1), ylim=c(0,1), main=paste0("md.loc at it=", t))
+            points(Xorig[,d], pch=20, col="forestgreen")
+            points(xold[d[1]], xold[d[2]], pch=20, col="red")
+            rect(low[d[1]], low[d[2]], upp[d[1]], upp[d[2]], col=rgb(0,1,0,alpha=0.2)) # the search space
+            if(!is.null(Xorig)){
+               legend("topright", c("xold", "Xorig"), xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col=c("red","forestgreen"), bty="n")
+            }else{
+               legend("topright", "xold", xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col="red", bty="n")
+            }
         }
       }else if(length(cand.ind) >= 1){ ## if there is no location with 'md', then randomly go to a location with 'non-md' ...     ## 2
         row.out.ind <- ceiling(runif(1)*length(cand.ind))
@@ -191,15 +203,17 @@ maximin <- function(n, p, T=10*n, Xorig=NULL, Xinit=NULL, verb=FALSE, plot=FALSE
         cand.ind <- cand.ind[!cand.ind==row.out] ## update the 'non-md' list
         
         if(plot==TRUE){
-          Xv <- X[,d]
-          plot(Xv, xlab=paste0("x", d[1]), ylab=paste0("x", d[2]), xlim=c(0,1), ylim=c(0,1), main=paste0("md.loc at it=", t))
-          points(Xorig[,d], pch=20, col="forestgreen")
-          points(xold[d[1]], xold[d[2]], pch=20, col="red")
-          points(xd[d[1]], xd[d[2]], pch=20, col="blue")
-          rect(low[d[1]], low[d[2]], upp[d[1]], upp[d[2]], col=rgb(0,1,0,alpha=0.2))
-          if(!is.null(Xorig)){
-            legend("topright", c("xold", expression(x[d]), "Xorig"), xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col=c("red","blue", "forestgreen"), bty="n")
-          }else legend("topright", c("xold", expression(x[d])), xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col=c("red", "blue"), bty="n")
+           Xv <- X[,d]
+           plot(Xv, xlab=paste0("x", d[1]), ylab=paste0("x", d[2]), xlim=c(0,1), ylim=c(0,1), main=paste0("md.loc at it=", t))
+           points(Xorig[,d], pch=20, col="forestgreen")
+           points(xold[d[1]], xold[d[2]], pch=20, col="red")
+           points(xd[d[1]], xd[d[2]], pch=20, col="blue")
+           rect(low[d[1]], low[d[2]], upp[d[1]], upp[d[2]], col=rgb(0,1,0,alpha=0.2))
+           if(!is.null(Xorig)){
+              legend("topright", c("xold", expression(x[d]), "Xorig"), xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col=c("red","blue", "forestgreen"), bty="n")
+           }else{
+              legend("topright", c("xold", expression(x[d])), xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col=c("red", "blue"), bty="n")
+           }
         }
       }else{   ## after going through each location with 'md' as well as with 'non-md': start "jumping out of the well", i.e.,
         ## ask the stuck location to jump to a place close to the X location which has the maximum md to other X locations and Xorig. 
@@ -208,7 +222,7 @@ maximin <- function(n, p, T=10*n, Xorig=NULL, Xinit=NULL, verb=FALSE, plot=FALSE
         ## justify 'xs'
         ## for each location in X, calculate its 'md' to other X locations and Xorig
         me <- apply(DD2, 1, function(x) min(x[x>0]))
-        ## justify the index with the maximum md 
+        ## justify the index with the maximum `md' 
         max.ind <- which(rowSums(DD2 < max(me))==1)
         inds <- ceiling(runif(1)*length(max.ind))
         max.inds <- max.ind[inds]
@@ -236,34 +250,38 @@ maximin <- function(n, p, T=10*n, Xorig=NULL, Xinit=NULL, verb=FALSE, plot=FALSE
         
         ## plot 'xs' and 'xd'
         if(plot==TRUE){
-          Xv <- X[,d]
-          plot(Xv, xlab=paste0("x", d[1]), ylab=paste0("x", d[2]), xlim=c(0,1), ylim=c(0,1), main=paste0("md.loc at it=", t))
-          points(Xorig[,d], pch=20, col="forestgreen")
-          points(xold[[1]], xold[d[2]], pch=20, col="cyan")
-          points(xs[d[1]], xs[d[2]], pch=20, col="blue")
-          points(st.new[d[1]], st.new[d[2]], pch=20, col="red")
-          points(xd[d[1]], xd[d[2]], pch=20, col="orange")
-          rect(low[d[1]], low[d[2]], upp[d[1]], upp[d[2]], col=rgb(0,1,0,alpha=0.2))
-          arrows(xold[d[[1]]], xold[d[[2]]], st.new[d[[1]]], st.new[d[[2]]], lty=2, col="gray")
-          if(!is.null(Xorig)){
-            legend("topright", c("st.new", "Xorig"), xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col=c("red","forestgreen"), bty="n")
-          }else legend("topright", "st.new", xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col="red", bty="n")
+           Xv <- X[,d]
+           plot(Xv, xlab=paste0("x", d[1]), ylab=paste0("x", d[2]), xlim=c(0,1), ylim=c(0,1), main=paste0("md.loc at it=", t))
+           points(Xorig[,d], pch=20, col="forestgreen")
+           points(xold[[1]], xold[d[2]], pch=20, col="cyan")
+           points(xs[d[1]], xs[d[2]], pch=20, col="blue")
+           points(st.new[d[1]], st.new[d[2]], pch=20, col="red")
+           points(xd[d[1]], xd[d[2]], pch=20, col="orange")
+           rect(low[d[1]], low[d[2]], upp[d[1]], upp[d[2]], col=rgb(0,1,0,alpha=0.2))
+           arrows(xold[d[[1]]], xold[d[[2]]], st.new[d[[1]]], st.new[d[[2]]], lty=2, col="gray")
+           if(!is.null(Xorig)){
+              legend("topright", c("st.new", "Xorig"), xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col=c("red","forestgreen"), bty="n")
+           }else{
+              legend("topright", "st.new", xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col="red", bty="n")
+           }
         }
       }
     }
     
     if(plot==TRUE){
-      xnew <- as.numeric(out$par)
-      Xv <- X[,d]
-      plot(Xv, xlab=paste0("x", d[1]), ylab=paste0("x", d[2]), xlim=c(0,1), ylim=c(0,1), main=paste0("md.loc at it=", t))
-      points(Xorig[,d], pch=20, col="forestgreen")
-      points(X[row.out,][d[1]], X[row.out,][d[2]], pch=20, col="red")
-      points(xnew[d[1]], xnew[d[2]], pch=20, col="blue")
-      rect(low[d[1]], low[d[2]], upp[d[1]], upp[d[2]], col=rgb(0,1,0,alpha=0.2))
-      arrows(X[row.out,][d[1]], X[row.out,][d[2]], xnew[d[1]], xnew[d[2]], length=0.1, lty=2, col="black") ## 'start' --> 'xnew'
-      if(!is.null(Xorig)){
-        legend("topright", c("xnew", "Xorig"), xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col=c("blue","forestgreen"), bty="n")
-      }else legend("topright", "xnew", xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col="blue", bty="n")
+       xnew <- as.numeric(out$par)
+       Xv <- X[,d]
+       plot(Xv, xlab=paste0("x", d[1]), ylab=paste0("x", d[2]), xlim=c(0,1), ylim=c(0,1), main=paste0("md.loc at it=", t))
+       points(Xorig[,d], pch=20, col="forestgreen")
+       points(X[row.out,][d[1]], X[row.out,][d[2]], pch=20, col="red")
+       points(xnew[d[1]], xnew[d[2]], pch=20, col="blue")
+       rect(low[d[1]], low[d[2]], upp[d[1]], upp[d[2]], col=rgb(0,1,0,alpha=0.2))
+       arrows(X[row.out,][d[1]], X[row.out,][d[2]], xnew[d[1]], xnew[d[2]], length=0.1, lty=2, col="black") ## 'start' --> 'xnew'
+       if(!is.null(Xorig)){
+          legend("topright", c("xnew", "Xorig"), xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col=c("blue","forestgreen"), bty="n")
+       }else{
+          legend("topright", "xnew", xpd=TRUE, horiz=TRUE, inset=c(-0.015, -0.045), pch=20, col="blue", bty="n")
+       }
     }
     
     X[row.out,] <- out$par
@@ -273,23 +291,27 @@ maximin <- function(n, p, T=10*n, Xorig=NULL, Xinit=NULL, verb=FALSE, plot=FALSE
     
     ## distances to the existing design
     if(!is.null(Xorig)){
-      D2[row.out,] <- as.numeric(distance(matrix(X[row.out,], nrow=1), Xorig)) ## update D2
-      md2 <- min(D2)
-      if(md2 < md){
-        md <- md2
-        md.ind <- which(D2==md2, arr.ind=TRUE)[,1]
-      }else if(md2==md) md.ind <- unique(c(md.ind, which(D2==md2, arr.ind=TRUE)[,1]))
+       D2[row.out,] <- as.numeric(distance(matrix(X[row.out,], nrow=1), Xorig)) ## update D2
+       md2 <- min(D2)
+       if(md2 < md){
+          md <- md2
+          md.ind <- which(D2==md2, arr.ind=TRUE)[,1]
+       }else if(md2==md){
+          md.ind <- unique(c(md.ind, which(D2==md2, arr.ind=TRUE)[,1]))
+       }
     }
     
-    if(plot==TRUE) mtext(paste("md =", format(round(as.numeric(md), 5), nsmall=5)))
-    
+    if(plot==TRUE){
+       mtext(paste("md =", format(round(as.numeric(md), 5), nsmall=5)))
+    }
+         
     mind[t+1] <- md    ## track 'md' at each iteration
     Xind[[t+1]] <- X   ## track 'X' at each iteration
     
     ## When t >= 1.3 * n, if there is no improvement on 'md' during the previous 
     ## (0.3 * n) iterations, then I shall push the algorithm to make progress ...
     ## In addition, I shall not do any push during the last (0.2 * T - 1) iterations 
-    ## since such push is only effective in the relatively long term ...
+    ## since such push only has impact in the long term ...
     if((t >= 1.3 * n) && (t <= 0.8 * T) && (cvs(mind[(t+1-0.3*n):(t+1)]) == TRUE)){
       
       if(is.null(Xorig)==TRUE) D2 <- NULL
@@ -332,21 +354,27 @@ maximin <- function(n, p, T=10*n, Xorig=NULL, Xinit=NULL, verb=FALSE, plot=FALSE
         D2[row.out,] <- as.numeric(distance(matrix(X[row.out,], nrow=1), Xorig)) ## update D2
         md2 <- min(D2)
         if(md2 < md){
-          md <- md2
-          md.ind <- which(D2==md2, arr.ind=TRUE)[,1]
-        }else if(md2==md) md.ind <- unique(c(md.ind, which(D2==md2, arr.ind=TRUE)[,1]))
+           md <- md2
+           md.ind <- which(D2==md2, arr.ind=TRUE)[,1]
+        }else if(md2==md){
+           md.ind <- unique(c(md.ind, which(D2==md2, arr.ind=TRUE)[,1]))
+        }
       }
+      
       mind[t+1] <- md    ## track 'md' at each iteration
       Xind[[t+1]] <- X   ## track 'X' at each iteration
     }
     
-    if((verb==TRUE) && (t%%10==0)) cat("t=", t, "/T=", T, " is done.\n", sep="")
+    if((verb==TRUE) && (t%%10==0)){
+       cat("t=", t, "/T=", T, " is done.\n", sep="")
+    }
   }
   
-  ## at the last iteration, recover the maximum md so far and the corresponding X
+  ## at the last iteration, recover the maximum `md' so far and the corresponding `X'
   mind[t+1] <- max(mind)
   X <- Xind[[which.max(mind)]]
-  
+  ## combine `Xorig' and `X'
   XXorig <- rbind(Xorig, X)
+  
   return(list(Xf=XXorig, mi=mind))
 }
