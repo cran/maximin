@@ -1,3 +1,16 @@
+1.0-4 (09 Jan 2021)
+-----
+
+Added more sanity checks within the two algorithms
+
+Modified DESCRIPTION
+
+Added the "usage" section for the "lola_kn" dataset
+
+Updated the "details" and "examples" sections in the manual file
+
+Updated the algorithm with discrete search
+
 1.0-3 (31 Oct 2019)
 -----
 

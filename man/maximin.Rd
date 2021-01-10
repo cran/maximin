@@ -7,7 +7,7 @@
 }
 
 \description{
-  Generates a space-filling design under the criterion of maximin distance;
+  Generates a space-filling design under the criterion of maximum-minimum distance;
   both discrete and continuous searches are provided.
 }
 
@@ -37,10 +37,10 @@
 }
 
 \details{
-  Constructing a space-filling design under the criterion of maximin distance is quite useful
-  in computer experiments and related fields. Previously, researchers would construct such a 
-  design in a random accept-reject way, i.e., randomly propose a location within the study 
-  region to replace a randomly selected row from the initial design. If such a proposal 
+  Constructing a space-filling design under the criterion of maximum-minimum distance is quite 
+  useful in computer experiments and related fields. Previously, researchers would construct 
+  such a design in a random accept-reject way, i.e., randomly propose a location within the 
+  study region to replace a randomly selected row from the initial design. If such a proposal 
   increases the minimum pairwise Euclidean distance, then accept the replacement; otherwise 
   keep the original design location. By repeatedly proposing (and accept-rejecting) in this 
   way one is able to construct an (approximately) space-filling design.  However the algorithm 
@@ -48,19 +48,19 @@
   
   In this package, we provide an alternative to build up a well-defined space-filling design 
   more efficiently. There are two versions, one is with discrete search, while the other is 
-  with continuous search. For the former, each iteration proposes to swap out the row from the 
-  initial design with the minimum distance, and swap in another location from a candidate set. 
-  For the latter, the core idea is the same, but instead of working with a candidate set, 
-  \code{\link{optim}} is used to maximize the distance between the "to-be-swapped-in" location 
-  and other design locations as well as to the existing design, \code{Xorig}. Several heuristics 
-  are deployed for situations where the search becomes stuck in a local mode.  One involves moving 
-  to a location with non-minimum distance. Or, if there is no progress during the past \eqn{0.3\times n}{0.3*n} 
-  iterations, we jump to a location which has the maximum minimum distance. 
+  with continuous search. For the former, each iteration proposes to swap out a row from the 
+  initial design with the minimum distance, and swap in one location from a candidate set to 
+  increase the minimum distance. For the latter, the core idea is the same, but instead of working 
+  with a candidate set, \code{\link{optim}} is used to maximize the distance between the "to-be-swapped-in" 
+  location and other design locations as well as to any existing design, \code{Xorig}. Several 
+  heuristics are deployed for situations where the search becomes stuck in a local mode.  One 
+  involves moving to a location with non-minimum distance, and the other is to jump to a location 
+  which has the maximum minimum distance. 
   
   For a visualization of applying \code{maximin.cand} in a real-life problem on solar irradiance, see Sun et al. (2019).
   
   \code{maximin.cand} returns the indices of \code{Xcand}, which makes the final space-filling design,
-  the minimum pairwise Euclidean distance with each iteration and the corresponding number 
+  and the minimum pairwise Euclidean distance with each iteration
   
   \code{maximin} returns the combined existing design and the space-filling design, 
   together with the minimum pairwise Euclidean distance with each iteration
@@ -70,7 +70,6 @@
 \code{maximin.cand} returns
   \item{\code{inds}}{ the indices of \code{Xcand}, which makes the final space-filling design }
   \item{\code{mis}}{ the minimum distance with each iteration; \code{length(mis) = Tmax + 1} }
-  \item{\code{mislen}}{ the number of \code{mis} with each iteration; \code{length(mislen) = Tmax + 1} }
   
 \code{maximin} returns
   \item{\code{Xf}}{ \code{dim(Xf) = (nrow(Xorig) + n) * p} }
@@ -98,16 +97,13 @@
    
  \dontrun{
    ## maximin.cand
-   # a generic function to expand grids at higher dimension
-   expand.grids <- function(x,d) expand.grid(replicate(d, x, simplify=FALSE))
-   
    # generate the design
-   library(lhs)
+   library("lhs")
    n <- 100
    p <- 2
    Xorig <- randomLHS(10, p)
    x1 <- seq(0, 1, length.out=n)
-   Xcand <- expand.grids(x1, p)
+   Xcand <- expand.grid(replicate(p, x1, simplify=FALSE))
    names(Xcand) <- paste0("x", 1:2)
    T <- nrow(Xcand)
    Xsparse <- maximin.cand(n=n, Xcand=Xcand, Tmax=T, Xorig=Xorig, 
@@ -137,7 +133,7 @@
   
   ## maximin
   # generate the design
-  library(lhs)
+  library("lhs")
   n <- 10
   p <- 2
   T <- 10*n
@@ -150,7 +146,7 @@
   par(mfrow=c(1,2))
   plot(Xsparse$Xf[,1], Xsparse$Xf[,2], xlab=expression(x[1]), ylab=expression(x[2]), 
        xlim=c(0, 1), ylim=c(0, 1), 
-       main=paste0("n=", n, "_p=", p, "_T=", T, "_maximin=", maxmd))
+       main=paste0("n=", n, " p=", p, " T=", T, " maximin=", maxmd))
   points(Xorig, col=2, pch=20)
   abline(h=c(0,1), v=c(0,1), lty=2, col=2)
   if(!is.null(Xorig)) legend("topright", "Xorig", xpd=TRUE, horiz=TRUE, 
@@ -165,4 +161,4 @@
 
 \keyword{space-filling design}
 \keyword{computer experiment}
-\keyword{maximin}
+\keyword{maximin distance}
