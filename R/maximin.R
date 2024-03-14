@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
-# Questions? Contact Furong Sun (furongs@vt.edu) and Robert B. Gramacy (rbg@vt.edu)
+# Questions? Contact Furong Sun (furong.sun@gmail.com) and Robert B. Gramacy (rbg@vt.edu)
 #
 #*******************************************************************************
 
@@ -31,14 +31,9 @@
 maximin <- function(n, p, T=10*n, Xorig=NULL, Xinit=NULL, verb=FALSE, plot=FALSE, boundary=FALSE){ 
   
   ####################################### sanity checks #######################################
-  if(!is.null(Xorig)){
-     # if(class(Xorig) != "matrix"){
-     #    Xorig <- as.matrix(Xorig)
-     # }else 
-    if(ncol(Xorig) != p){
-        stop("column dimension mismatch between X and Xorig") 
-     }
-  }
+  if(is.data.frame(Xorig) || is.vector(Xorig)) Xorig <- as.matrix(Xorig)
+  
+  if(ncol(Xorig) != p) stop("column dimension mismatch between X and Xorig")
   
   if(n <= 1) stop("n must be bigger than 1.")
   

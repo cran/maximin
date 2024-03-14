@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 #
-# Questions? Contact Furong Sun (furongs@vt.edu) and Robert B. Gramacy (rbg@vt.edu)
+# Questions? Contact Furong Sun (furong.sun@gmail.com) and Robert B. Gramacy (rbg@vt.edu)
 #
 #*******************************************************************************
 
@@ -29,25 +29,19 @@
 maximin.cand <- function(n, Xcand, Tmax=nrow(Xcand), Xorig=NULL, init=NULL, verb=FALSE, tempfile=NULL) 
 {
   ## sanity checks
-  if(class(Xcand) != "matrix"){
-     Xcand <- as.matrix(Xcand)
-  }
+  if(is.null(Xcand)) stop("'Xcand' does not exist, and pls provide it as a matrix.")
   
-  if(!is.null(Xorig) && class(Xorig) != "matrix"){
-     Xorig <- as.matrix(Xorig)
-  }
+  if(is.data.frame(Xcand) || is.vector(Xcand)) Xcand <- as.matrix(Xcand)
   
-  if(n==1){
-     stop("n must be bigger than 1.")
-  }
+  if(n==1) stop("n must be bigger than 1.")
   
   if(!is.null(Xorig))
-     if(ncol(Xcand) != ncol(Xorig)) 
-        stop("column dimension mismatch between Xcand and Xorig :-(")
+     if(is.data.frame(Xorig) || is.vector(Xorig)) Xorig <- as.matrix(Xorig)
+     
+     if(ncol(Xcand) != ncol(Xorig)) stop("column dimension mismatch between Xcand and Xorig :-(")
   
-  if(Tmax <= n){
-    warning("Tmax had better be bigger than n.")
-  }
+  if(Tmax <= n) warning("Tmax had better be bigger than n.")
+  
   
   ## the number of runs in the candidate set
   ncand <- nrow(Xcand)
@@ -103,6 +97,7 @@ maximin.cand <- function(n, Xcand, Tmax=nrow(Xcand), Xorig=NULL, init=NULL, verb
   #mindlen <- rep(NA, Tmax+1)
   mind[1] <- md 
   #mindlen[1] <- mdlen
+  
   ## there should be improvement with each iteration regarding design criterion: mdprime > md
   for(t in 1:Tmax){
       
@@ -123,18 +118,18 @@ maximin.cand <- function(n, Xcand, Tmax=nrow(Xcand), Xorig=NULL, init=NULL, verb
       row.out <- uw.ind[row.out.ind]
       X[row.in,] <- Xcand[xo[row.out],] ## == Xun[row.out,], the "to-be-swapped-in" location: corresponding to row.out
       
-      if(class(X[-row.in,]) != "matrix"){
-          X.rrow <- matrix(X[-row.in,], nrow=1)
-      }
-      
+      #assign X[row.in,] as a matrix to Xr
       Xr <- matrix(X[row.in,], nrow=1)
       
-      if(class(X[-row.in,]) == "matrix"){
+      #assign X[-row.in,] as a matrix to X.rrow
+      if( is.vector(X[-row.in,]) ) X.rrow <- matrix(X[-row.in,], nrow=1) ## 1*p
+      
+      #calculate distance
+      if(is.matrix(X[-row.in,])){
          dr <- distance(Xr, X[-row.in,])
       }else{
          dr <- distance(Xr, X.rrow)
       }
-        
       
       ## update D
       D[row.in, -row.in] <- D[-row.in, row.in] <- as.numeric(dr)

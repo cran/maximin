@@ -90,7 +90,7 @@
 }
 
 \author{
-  Furong Sun \email{furongs@vt.edu} and Robert B. Gramacy \email{rbg@vt.edu} 
+  Furong Sun \email{furong.sun@gmail.com} and Robert B. Gramacy \email{rbg@vt.edu} 
 }
 
 \examples{
@@ -129,6 +129,7 @@
         main="progress on minimum distance")
    abline(v=n, lty=2)
    mtext(paste0("design size=", n), at=n, cex=0.6)
+   
   }
   
   ## maximin
