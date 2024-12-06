@@ -1,8 +1,15 @@
 Package: maximin
 Title: Space-Filling Design under Maximin Distance
-Version: 1.0-5
-Date: 2024-03-13
-Author: Furong Sun <furong.sun@gmail.com>, Robert B. Gramacy <rbg@vt.edu>
+Version: 1.0-6
+Date: 2024-12-05
+Authors@R: c(person(given = "Furong",
+                   family = "Sun",
+                     role = c("aut", "cre"),
+                    email = "furong.sun@gmail.com"),
+             person(given = c("Robert", "B."),
+                   family = "Gramacy",
+                     role = "aut",
+                    email = "rbg@vt.edu"))
 Depends: R (>= 4.2.0)
 Imports: plgp
 Suggests: lhs
@@ -10,6 +17,8 @@ Description: Constructs a space-filling design under the criterion of maximum-mi
 Maintainer: Furong Sun <furong.sun@gmail.com>
 License: LGPL
 NeedsCompilation: no
-Packaged: 2024-03-13 21:15:37 UTC; furongsun
+Packaged: 2024-12-06 06:36:12 UTC; furongsun
 Repository: CRAN
-Date/Publication: 2024-03-14 00:00:05 UTC
+Date/Publication: 2024-12-06 15:10:06 UTC
+Author: Furong Sun [aut, cre],
+  Robert B. Gramacy [aut]

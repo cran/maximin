@@ -31,9 +31,10 @@
 maximin <- function(n, p, T=10*n, Xorig=NULL, Xinit=NULL, verb=FALSE, plot=FALSE, boundary=FALSE){ 
   
   ####################################### sanity checks #######################################
-  if(is.data.frame(Xorig) || is.vector(Xorig)) Xorig <- as.matrix(Xorig)
-  
-  if(ncol(Xorig) != p) stop("column dimension mismatch between X and Xorig")
+  if(is.data.frame(Xorig) || is.vector(Xorig)) {
+     Xorig <- as.matrix(Xorig)
+     if (ncol(Xorig) != p) stop("column dimension mismatch between X and Xorig") #fix the bug on 5DEC24 per Paul's feedback
+  }
   
   if(n <= 1) stop("n must be bigger than 1.")
   
@@ -105,7 +106,7 @@ maximin <- function(n, p, T=10*n, Xorig=NULL, Xinit=NULL, verb=FALSE, plot=FALSE
             st.prime[i] <- xs[i]
          }else{
             st.prime[i] <- ifelse(xs[i] > xd[i], 
-                                  xs[i] - 0.05*sqrt(ds), ## not sure it is right
+                                  xs[i] - 0.05*sqrt(ds),
                                   xs[i] + 0.05*sqrt(ds))
          }
      }

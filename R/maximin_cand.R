@@ -35,10 +35,13 @@ maximin.cand <- function(n, Xcand, Tmax=nrow(Xcand), Xorig=NULL, init=NULL, verb
   
   if(n==1) stop("n must be bigger than 1.")
   
-  if(!is.null(Xorig))
+  #add `{ }` below on 5DEC2024 per Adam's feedback
+  if(!is.null(Xorig)){
+    
      if(is.data.frame(Xorig) || is.vector(Xorig)) Xorig <- as.matrix(Xorig)
      
      if(ncol(Xcand) != ncol(Xorig)) stop("column dimension mismatch between Xcand and Xorig :-(")
+  }
   
   if(Tmax <= n) warning("Tmax had better be bigger than n.")
   
